@@ -5,9 +5,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(() => {
   return {
-    // Используем './' для относительных путей, чтобы сайт корректно 
-    // работал при деплое в любую подпапку на GitHub Pages
-    base: './', 
+    base: '/LinaLi/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
@@ -15,7 +13,6 @@ export default defineConfig(() => {
       },
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
       hmr: process.env.DISABLE_HMR !== 'true',
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },

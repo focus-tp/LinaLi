@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route } from "react-router-dom"; // Заменили BrowserRouter на HashRouter
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import Lenis from "lenis";
 
@@ -29,7 +29,6 @@ export default function App() {
   }, []);
 
   return (
-    // HashRouter автоматически обрабатывает пути, basename больше не нужен
     <HashRouter>
       <Routes>
         <Route path="/" element={<Home />} />
