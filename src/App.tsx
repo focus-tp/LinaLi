@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom"; // Заменили BrowserRouter на HashRouter
 import { useEffect } from "react";
 import Lenis from "lenis";
 
@@ -29,12 +29,13 @@ export default function App() {
   }, []);
 
   return (
-    <BrowserRouter basename="/LinaLi/">
+    // HashRouter автоматически обрабатывает пути, basename больше не нужен
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/panel/*" element={<AdminPanel />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
