@@ -47,7 +47,7 @@ export default function Programs() {
             className="hidden md:block"
           >
             <img 
-              src="/basket.jpeg" 
+              src="./basket.jpeg" 
               alt="Баскетбольные занятия" 
               className="w-full h-auto rounded-3xl grayscale opacity-80"
             />

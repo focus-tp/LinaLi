@@ -15,7 +15,7 @@ export default function About() {
             className="lg:col-span-5"
           >
             <img 
-              src="/elina.jpeg" 
+              src="./elina.jpeg" 
               alt="Эвелина Литвинова" 
               className="w-full h-auto rounded-2xl shadow-lg object-cover" 
             />
