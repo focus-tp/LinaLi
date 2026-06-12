@@ -1,0 +1,38 @@
+{
+  "entities": {
+    "Article": {
+      "title": "Article",
+      "description": "An article published on the portfolio",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "content": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "number", "description": "Timestamp" },
+        "updatedAt": { "type": "number", "description": "Timestamp" }
+      },
+      "required": ["title", "content", "createdAt"]
+    },
+    "Photo": {
+      "title": "Photo",
+      "description": "A photo in the gallery",
+      "type": "object",
+      "properties": {
+        "imageUrl": { "type": "string" },
+        "caption": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["imageUrl", "createdAt"]
+    }
+  },
+  "firestore": {
+    "articles/{articleId}": {
+      "schema": "Article",
+      "description": "Articles for the blog section"
+    },
+    "photos/{photoId}": {
+      "schema": "Photo",
+      "description": "Photos for the gallery section"
+    }
+  }
+}
