@@ -9,6 +9,8 @@ export default function AdminArticles() {
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [form, setForm] = useState({ title: "", content: "", imageUrl: "" });
+  const [error, setError] = useState<string>("");
+  const [submitting, setSubmitting] = useState(false);
 
   // Функция для загрузки списка статей
   const fetchArticles = async () => {
@@ -17,7 +19,9 @@ export default function AdminArticles() {
       setArticles(records as unknown as Article[]);
       setLoading(false);
     } catch (err) {
-      handlePBError(err, OperationType.GET, "articles");
+      const message = err instanceof Error ? err.message : String(err);
+      console.error("Ошибка загрузки статей:", message);
+      setError(`Ошибка загрузки: ${message}`);
     }
   };
 
@@ -27,6 +31,9 @@ export default function AdminArticles() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSubmitting(true);
+    
     try {
       if (currentId) {
         await pb.collection('articles').update(currentId, form);
@@ -38,7 +45,11 @@ export default function AdminArticles() {
       setCurrentId(null);
       fetchArticles(); // Обновляем список
     } catch (err) {
-      handlePBError(err, currentId ? OperationType.UPDATE : OperationType.CREATE, "articles");
+      const message = err instanceof Error ? err.message : String(err);
+      console.error("Ошибка сохранения:", message);
+      setError(`Ошибка сохранения: ${message}`);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -81,15 +92,34 @@ export default function AdminArticles() {
       {/* Остальная часть вёрстки без изменений... */}
       {isEditing ? (
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-medium">{currentId ? 'Редактировать' : 'Новая статья'}</h2>
+            <button onClick={() => { setIsEditing(false); setError(""); }} className="text-slate-400 hover:text-slate-600">
+              <X size={24} />
+            </button>
+          </div>
            {/* Форма как была */}
+          {error && <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg mb-4">{error}</div>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Заголовок</label>
-              <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 outline-none" />
+              <input required disabled={submitting} value={form.title} onChange={e => setForm({...form, title: e.target.value})} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 outline-none disabled:opacity-50" />
             </div>
-            {/* ... остальные поля ... */}
-            <div className="flex justify-end pt-4">
-              <button type="submit" className="bg-accent-teal text-white px-6 py-2 rounded-lg">Сохранить</button>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">URL Изображения</label>
+              <input disabled={submitting} value={form.imageUrl} onChange={e => setForm({...form, imageUrl: e.target.value})} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 outline-none disabled:opacity-50" placeholder="https://..." />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Текст статьи</label>
+              <textarea required disabled={submitting} value={form.content} onChange={e => setForm({...form, content: e.target.value})} rows={8} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 outline-none disabled:opacity-50" placeholder="Текст..." />
+            </div>
+            <div className="flex justify-end pt-4 gap-2">
+              <button type="button" onClick={() => { setIsEditing(false); setError(""); }} disabled={submitting} className="px-6 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50">
+                Отмена
+              </button>
+              <button type="submit" disabled={submitting} className="bg-accent-teal text-white px-6 py-2 rounded-lg font-medium hover:bg-accent-blue transition-colors disabled:opacity-50">
+                {submitting ? "Сохраняю..." : "Сохранить"}
+              </button>
             </div>
           </form>
         </div>

@@ -8,6 +8,8 @@ export default function AdminPhotos() {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState<string | null>(null);
+  const [error, setError] = useState<string>("");
+  const [submitting, setSubmitting] = useState(false);
   
   const [form, setForm] = useState({ imageUrl: "", caption: "" });
 
@@ -17,7 +19,9 @@ export default function AdminPhotos() {
       setPhotos(records as unknown as Photo[]);
       setLoading(false);
     } catch (err) {
-      handlePBError(err, OperationType.GET, "photos");
+      const message = err instanceof Error ? err.message : String(err);
+      console.error("Ошибка загрузки фото:", message);
+      setError(`Ошибка загрузки: ${message}`);
     }
   };
 
@@ -27,6 +31,9 @@ export default function AdminPhotos() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSubmitting(true);
+    
     try {
       if (currentId) {
         await pb.collection('photos').update(currentId, {
@@ -44,7 +51,11 @@ export default function AdminPhotos() {
       setCurrentId(null);
       fetchPhotos();
     } catch (err) {
-      handlePBError(err, currentId ? OperationType.UPDATE : OperationType.CREATE, "photos");
+      const message = err instanceof Error ? err.message : String(err);
+      console.error("Ошибка сохранения:", message);
+      setError(`Ошибка сохранения: ${message}`);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -87,22 +98,26 @@ export default function AdminPhotos() {
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-medium">{currentId ? 'Редактировать' : 'Новое фото'}</h2>
-            <button onClick={() => setIsEditing(false)} className="text-slate-400 hover:text-slate-600">
+            <button onClick={() => { setIsEditing(false); setError(""); }} className="text-slate-400 hover:text-slate-600">
               <X size={24} />
             </button>
           </div>
+          {error && <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg mb-4">{error}</div>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">URL Изображения</label>
-              <input required value={form.imageUrl} onChange={e => setForm({...form, imageUrl: e.target.value})} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-accent-teal outline-none" placeholder="https://..." />
+              <input required disabled={submitting} value={form.imageUrl} onChange={e => setForm({...form, imageUrl: e.target.value})} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-accent-teal outline-none disabled:opacity-50" placeholder="https://..." />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Подпись (Необязательно)</label>
-              <input value={form.caption} onChange={e => setForm({...form, caption: e.target.value})} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-accent-teal outline-none" placeholder="Описание фото..." />
+              <input disabled={submitting} value={form.caption} onChange={e => setForm({...form, caption: e.target.value})} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-accent-teal outline-none disabled:opacity-50" placeholder="Описание фото..." />
             </div>
-            <div className="flex justify-end pt-4">
-              <button type="submit" className="bg-accent-teal text-white px-6 py-2 rounded-lg font-medium hover:bg-accent-blue transition-colors">
-                Сохранить
+            <div className="flex justify-end gap-2 pt-4">
+              <button type="button" onClick={() => { setIsEditing(false); setError(""); }} disabled={submitting} className="px-6 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50">
+                Отмена
+              </button>
+              <button type="submit" disabled={submitting} className="bg-accent-teal text-white px-6 py-2 rounded-lg font-medium hover:bg-accent-blue transition-colors disabled:opacity-50">
+                {submitting ? "Сохраняю..." : "Сохранить"}
               </button>
             </div>
           </form>

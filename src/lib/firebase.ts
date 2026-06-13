@@ -1,6 +1,7 @@
 import PocketBase from 'pocketbase';
 
-export const pb = new PocketBase('http://89.169.189.230');
+const pbUrl = (import.meta.env.VITE_POCKETBASE_URL as string) || 'http://89.169.189.230';
+export const pb = new PocketBase(pbUrl);
 
 // Вспомогательный enum для типов операций
 export enum OperationType {
