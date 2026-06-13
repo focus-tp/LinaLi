@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { db, handleFirestoreError, OperationType } from "../lib/firebase";
+import { pb, OperationType, handlePBError } from "../lib/firebase";
 import { Photo } from "../types";
 import { Plus, Trash2, Edit2, X } from "lucide-react";
 
@@ -12,47 +11,50 @@ export default function AdminPhotos() {
   
   const [form, setForm] = useState({ imageUrl: "", caption: "" });
 
-  useEffect(() => {
-    const q = query(collection(db, "photos"), orderBy("createdAt", "desc"));
-    const unsub = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Photo));
-      setPhotos(docs);
+  const fetchPhotos = async () => {
+    try {
+      const records = await pb.collection('photos').getFullList({ sort: '-created' });
+      setPhotos(records as unknown as Photo[]);
       setLoading(false);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, "photos");
-    });
-    return unsub;
+    } catch (err) {
+      handlePBError(err, OperationType.GET, "photos");
+    }
+  };
+
+  useEffect(() => {
+    fetchPhotos();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       if (currentId) {
-        await updateDoc(doc(db, "photos", currentId), {
+        await pb.collection('photos').update(currentId, {
           imageUrl: form.imageUrl,
           caption: form.caption,
         });
       } else {
-        await addDoc(collection(db, "photos"), {
+        await pb.collection('photos').create({
           imageUrl: form.imageUrl,
           caption: form.caption,
-          createdAt: serverTimestamp(),
         });
       }
       setIsEditing(false);
       setForm({ imageUrl: "", caption: "" });
       setCurrentId(null);
+      fetchPhotos();
     } catch (err) {
-      handleFirestoreError(err, currentId ? OperationType.UPDATE : OperationType.CREATE, "photos");
+      handlePBError(err, currentId ? OperationType.UPDATE : OperationType.CREATE, "photos");
     }
   };
 
   const handleDelete = async (id: string) => {
     if (confirm("Вы уверены, что хотите удалить эту фотографию?")) {
       try {
-        await deleteDoc(doc(db, "photos", id));
+        await pb.collection('photos').delete(id);
+        fetchPhotos();
       } catch (err) {
-        handleFirestoreError(err, OperationType.DELETE, `photos/${id}`);
+        handlePBError(err, OperationType.DELETE, `photos/${id}`);
       }
     }
   };

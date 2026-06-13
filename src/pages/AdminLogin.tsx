@@ -1,5 +1,4 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../lib/firebase";
+import { pb } from "../lib/firebase";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -10,12 +9,12 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // Останавливаем перезагрузку страницы при отправке формы
+    e.preventDefault();
     setError("");
     
     try {
-      // Пытаемся войти с помощью почты и пароля
-      await signInWithEmailAndPassword(auth, email, password);
+      // Аутентификация через PocketBase
+      await pb.collection('users').authWithPassword(email, password);
       // Если успешно — пускаем в админку
       navigate("/admin/panel");
     } catch (err: any) {

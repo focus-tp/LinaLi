@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
-import { auth } from "../lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { pb } from "../lib/firebase";
 import AdminArticles from "./AdminArticles";
 import AdminPhotos from "./AdminPhotos";
 import { LayoutDashboard, FileText, Image as ImageIcon, LogOut } from "lucide-react";
@@ -12,14 +11,14 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (!user || user.email !== "tr-vlasova@mail.ru") {
-        navigate("/admin");
-      } else {
-        setLoading(false);
-      }
-    });
-    return unsub;
+    // Проверяем, авторизован ли пользователь
+    const isAuthenticated = pb.authStore.isValid;
+    
+    if (!isAuthenticated) {
+      navigate("/admin");
+    } else {
+      setLoading(false);
+    }
   }, [navigate]);
 
   if (loading) {
@@ -27,7 +26,8 @@ export default function AdminPanel() {
   }
 
   const handleLogout = () => {
-    auth.signOut();
+    pb.authStore.clear();
+    navigate("/admin");
   };
 
   return (

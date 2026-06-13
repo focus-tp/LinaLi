@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
-import { db, handleFirestoreError, OperationType } from "../../lib/firebase";
+import { pb, OperationType, handlePBError } from "../../lib/firebase";
 import { Photo } from "../../types";
 import { motion, useScroll, useTransform } from "motion/react";
 
@@ -15,17 +14,19 @@ export default function Gallery() {
 
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
 
+  const fetchPhotos = async () => {
+    try {
+      const records = await pb.collection('photos').getFullList({ sort: '-created' });
+      setPhotos(records as unknown as Photo[]);
+      setLoading(false);
+    } catch (error) {
+      console.warn("PocketBase access offline or error:", error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const q = query(collection(db, "photos"), orderBy("createdAt", "desc"));
-    const unsub = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Photo));
-      setPhotos(docs);
-      setLoading(false);
-    }, (error) => {
-      console.warn("Firestore access offline or error:", error);
-      setLoading(false);
-    });
-    return unsub;
+    fetchPhotos();
   }, []);
 
   return (

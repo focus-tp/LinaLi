@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
-import { db, handleFirestoreError, OperationType } from "../../lib/firebase";
+import { pb, OperationType, handlePBError } from "../../lib/firebase";
 import { Article } from "../../types";
 import { motion } from "motion/react";
 import ReactMarkdown from "react-markdown";
@@ -9,17 +8,19 @@ export default function Blog() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchArticles = async () => {
+    try {
+      const records = await pb.collection('articles').getFullList({ sort: '-created' });
+      setArticles(records as unknown as Article[]);
+      setLoading(false);
+    } catch (error) {
+      console.warn("PocketBase access offline or error:", error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const q = query(collection(db, "articles"), orderBy("createdAt", "desc"));
-    const unsub = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Article));
-      setArticles(docs);
-      setLoading(false);
-    }, (error) => {
-      console.warn("Firestore access offline or error:", error);
-      setLoading(false);
-    });
-    return unsub;
+    fetchArticles();
   }, []);
 
   if (loading || articles.length === 0) return null;
