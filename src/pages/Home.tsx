@@ -8,7 +8,6 @@ import Achievements from "../components/sections/Achievements";
 import Programs from "../components/sections/Programs";
 import PublicLife from "../components/sections/PublicLife";
 import Blog from "../components/sections/Blog";
-import Gallery from "../components/sections/Gallery";
 import Footer from "../components/sections/Footer";
 import Navbar from "../components/Navbar";
 
@@ -18,14 +17,13 @@ export default function Home() {
       <Navbar />
       <Hero />
       <About />
+      <Blog />
       <SignLanguage />
       <Volunteer />
       <Programs /> {/* Стоит идеально на новом месте */}
-      <Gallery />
       <Methodology /> {/* Подняли Методику выше */}
       <Achievements /> {/* Олимп теперь под Методикой */}
       <PublicLife />
-      <Blog />
       <Footer />
     </div>
   );

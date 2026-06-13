@@ -3,8 +3,6 @@ import { useEffect } from "react";
 import Lenis from "lenis";
 
 import Home from "./pages/Home";
-import AdminLogin from "./pages/AdminLogin";
-import AdminPanel from "./pages/AdminPanel";
 import CustomCursor from "./components/CustomCursor";
 
 export default function App() {
@@ -34,8 +32,6 @@ export default function App() {
       <CustomCursor />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/admin" element={<AdminLogin />} />
-        <Route path="/admin/panel/*" element={<AdminPanel />} />
       </Routes>
     </HashRouter>
   );
