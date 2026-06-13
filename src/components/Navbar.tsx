@@ -6,17 +6,29 @@ import { motion, AnimatePresence } from "motion/react";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Функция для плавного скролла без изменения URL
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault(); // Запрещаем браузеру менять URL
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+      setIsOpen(false); // Автоматически закрываем мобильное меню при клике
+    } else {
+      console.warn(`Элемент с id="${id}" не найден на странице. Проверьте id в компоненте.`);
+    }
+  };
+
   return (
     <nav className="fixed w-full z-50 bg-cream/90 backdrop-blur-md border-b border-slate-200/50 mix-blend-difference">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between mix-blend-exclusion">
-        <Link to="/" className="font-serif text-xl font-medium tracking-wide !text-white z-10 text-white relative z-50">
+        <Link to="/" className="font-serif text-xl font-medium tracking-wide !text-white z-10 relative z-50">
           Э. ЛИТВИНОВА
         </Link>
         <div className="hidden md:flex items-center space-x-8 text-sm uppercase tracking-widest font-medium z-10 text-white relative z-50">
-          <a href="#about" className="hover:text-accent-teal transition-colors">Обо мне</a>
-          <a href="#volunteer" className="hover:text-accent-teal transition-colors">Семьи</a>
-          <a href="#methodology" className="hover:text-accent-teal transition-colors">Методика</a>
-          <a href="#blog" className="hover:text-accent-teal transition-colors">Блог</a>
+          <a href="#about" onClick={(e) => handleScroll(e, 'about')} className="hover:text-accent-teal transition-colors cursor-pointer">Кто я</a>
+          <a href="#sign-language" onClick={(e) => handleScroll(e, 'sign-language')} className="hover:text-accent-teal transition-colors cursor-pointer">Направления</a>
+          <a href="#methodology" onClick={(e) => handleScroll(e, 'methodology')} className="hover:text-accent-teal transition-colors cursor-pointer">Мой подход</a>
+          <a href="#blog" onClick={(e) => handleScroll(e, 'blog')} className="hover:text-accent-teal transition-colors cursor-pointer">Медиа</a>
         </div>
         <button 
           className="md:hidden relative z-50 text-white p-2 -mr-2 mix-blend-exclusion"
@@ -27,23 +39,23 @@ export default function Navbar() {
         </button>
       </div>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-full left-0 w-full bg-slate-900"
-          >
-            <div className="px-6 py-8 flex flex-col space-y-6 text-center text-sm uppercase tracking-widest font-medium text-white mix-blend-exclusion">
-              <a href="#about" onClick={() => setIsOpen(false)} className="block hover:text-accent-teal transition-colors py-2">Обо мне</a>
-              <a href="#volunteer" onClick={() => setIsOpen(false)} className="block hover:text-accent-teal transition-colors py-2">Семьи</a>
-              <a href="#methodology" onClick={() => setIsOpen(false)} className="block hover:text-accent-teal transition-colors py-2">Методика</a>
-              <a href="#blog" onClick={() => setIsOpen(false)} className="block hover:text-accent-teal transition-colors py-2">Блог</a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="md:hidden absolute top-full left-0 w-full bg-slate-900"
+              >
+                <div className="px-6 py-8 flex flex-col space-y-6 text-center text-sm uppercase tracking-widest font-medium text-white mix-blend-exclusion">
+                  <a href="#about" onClick={(e) => handleScroll(e, 'about')} className="block hover:text-accent-teal transition-colors py-2 cursor-pointer">Кто я</a>
+                  <a href="#sign-language" onClick={(e) => handleScroll(e, 'sign-language')} className="block hover:text-accent-teal transition-colors py-2 cursor-pointer">Направления</a>
+                  <a href="#methodology" onClick={(e) => handleScroll(e, 'methodology')} className="block hover:text-accent-teal transition-colors py-2 cursor-pointer">Мои Подход</a>
+                  <a href="#blog" onClick={(e) => handleScroll(e, 'blog')} className="block hover:text-accent-teal transition-colors py-2 cursor-pointer">Медиа</a>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
     </nav>
   );
 }

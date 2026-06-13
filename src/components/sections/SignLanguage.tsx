@@ -3,7 +3,7 @@ import { Mic2, Music } from "lucide-react";
 
 export default function SignLanguage() {
   return (
-    <section className="py-24 bg-slate-900 text-cream relative">
+    <section id="sign-language" className="py-24 bg-slate-900 text-cream relative">
       {/* Top Torn Edge */}
       <div className="absolute top-0 left-0 w-full h-[60px] bg-cream torn-edge-top z-20" />
       
