@@ -1,0 +1,47 @@
+.custom-cursor,
+.custom-cursor-dot {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.custom-cursor {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.04);
+  transform: translate3d(-50%, -50%, 0);
+  transition: transform 160ms ease, width 160ms ease, height 160ms ease, border-color 120ms ease, background 120ms ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.custom-cursor-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.85);
+  transform: translate3d(-50%, -50%, 0);
+  transition: transform 80ms linear, opacity 120ms ease;
+}
+
+.custom-cursor.cursor--hover {
+  width: 48px;
+  height: 48px;
+  border-color: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.custom-cursor.cursor--down {
+  transform: translate3d(-50%, -50%, 0) scale(0.96);
+  opacity: 0.95;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .custom-cursor,
+  .custom-cursor-dot {
+    display: none !important;
+  }
+}
