@@ -28,6 +28,7 @@ export default function Navbar() {
           <a href="#about" onClick={(e) => handleScroll(e, 'about')} className="hover:text-accent-teal transition-colors cursor-pointer">Кто я</a>
           <a href="#sign-language" onClick={(e) => handleScroll(e, 'sign-language')} className="hover:text-accent-teal transition-colors cursor-pointer">Направления</a>
           <a href="#methodology" onClick={(e) => handleScroll(e, 'methodology')} className="hover:text-accent-teal transition-colors cursor-pointer">Мой подход</a>
+          <a href="#blog" onClick={(e) => handleScroll(e, 'blog')} className="hover:text-accent-teal transition-colors cursor-pointer">Блог</a>
         </div>
         <button 
           className="md:hidden relative z-50 text-white p-2 -mr-2 mix-blend-exclusion"
@@ -50,6 +51,7 @@ export default function Navbar() {
                   <a href="#about" onClick={(e) => handleScroll(e, 'about')} className="block hover:text-accent-teal transition-colors py-2 cursor-pointer">Кто я</a>
                   <a href="#sign-language" onClick={(e) => handleScroll(e, 'sign-language')} className="block hover:text-accent-teal transition-colors py-2 cursor-pointer">Направления</a>
                   <a href="#methodology" onClick={(e) => handleScroll(e, 'methodology')} className="block hover:text-accent-teal transition-colors py-2 cursor-pointer">Мои Подход</a>
+                  <a href="#blog" onClick={(e) => handleScroll(e, 'blog')} className="block hover:text-accent-teal transition-colors py-2 cursor-pointer">Блог</a>
                 </div>
               </motion.div>
             )}
