@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="relative w-full h-[100dvh] bg-slate-900 flex flex-col items-center justify-center overflow-hidden text-cream">
       {/* Background Image */}
       <img 
-        src="/hero.jpeg" 
+        src="./hero.jpeg" 
         alt="Hero background" 
         className="absolute inset-0 w-full h-full object-cover object-center md:object-[70%_center] opacity-40 pointer-events-none grayscale z-0" 
       />
